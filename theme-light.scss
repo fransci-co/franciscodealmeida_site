@@ -1,0 +1,21 @@
+
+/*-- scss:defaults --*/
+
+
+
+// Light
+$link-color: #bb8acf;
+$body-bg: #fafafa !default;
+$body-color: #030303 !default;
+
+@function body-mix($weight) {
+    @return mix($body-bg, $body-color, $weight);
+  }
+  
+  
+  .nav-footer a:hover {
+    color: body-mix(1%)
+  }
+  
+
+

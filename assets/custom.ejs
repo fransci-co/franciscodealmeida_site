@@ -1,0 +1,54 @@
+```{=html}
+<%/* so category filtering works */%>
+<ul class="list" style="list-style-type:none">
+
+<%/* create custom listing */%>
+<% for (const item of items) { %>
+
+  <li <%= metadataAttrs(item) %>>
+  
+    <div id="container" style="height:100%; width:100%; overflow: hidden; display: flex; margin-left: -45px; margin-bottom: 40px;">
+    
+      <div id="itemImage" style="width:250; height:250; background-size:contain; background-position:center; margin: 0px 40px 20px 0px;">
+      
+        <a href="<%- item.path %>" class="listing-categories">
+          <img src="<%- item.image %>" width="250" height="250" />
+        </a>
+        
+      </div>
+    
+    <div id="itemDetails" style="width:100%;">
+    
+      <div id="itemHeader" style="justify-content: space-between; line-height:35px; margin-bottom:3px; align-items:flex-start;">
+    
+      <div id="itemTitle" style="display:block; width:95%">
+        <p style="font-size:30px">
+          <a href="<%- item.path %>" class="listing-categories"><%= item.title %>
+          </a>
+        </p>
+      </div>
+    
+      <div id="itemDescription" style="margin-bottom:4px">
+        <%= item['description'] %>
+      </div>
+
+      <div id="created" style="margin-top:0px; font-size:14px;">
+        <%= item['date'] %>
+      </div>
+  
+      <div id="itemCategory" style="margin-top: 2px; margin-bottom: 16px; font-size:11px; font-weight:500; color:#555; padding: 3px 5px; border: 1px solid #555; display: inline-block; border-radius:3px;">
+        <%= item['categories'] %>
+      </div>
+
+    </div>
+    
+  </div>
+  
+</div>
+
+</li>
+
+<% } %>
+
+</ul>
+```

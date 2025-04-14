@@ -1,0 +1,135 @@
+
+/*-- scss:defaults --*/
+
+// Fonts
+
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+$font-family-sans-serif:  "Funnel Display" !default;
+$font-family-serif:      "Funnel Display" !default;
+$font-family-monospace:   "Inter" !default;
+$font-size-base:    0.90rem !default;
+$link-decoration: none;
+$grid-body-width: 835px !default;
+
+p.subtitle.lead {
+  font-family: "Funnel Display";
+  font-weight: 600; /* Bold */
+  letter-spacing: 1px; /* Slight spacing */
+  text-align: center;
+
+}
+
+h1.title  {
+  font-family: "Funnel Display";
+  font-weight: 800; /* Bold */
+  width: 100%; 
+}
+
+
+.special_font_1 {
+  font-family: "Funnel Display";
+  font-size: 1.1rem;
+}
+
+
+  // Sidebar
+
+  div.sidebar-menu-container {
+    font-family: "Funnel Display";
+  
+  }
+  
+
+  // Titles
+
+a:href {
+  color: #00ab6b;
+}
+
+
+a.listing-categories{
+  font-family: "Funnel Display";
+  text-decoration: none;
+}
+
+
+div#itemCategory, div#created{
+  font-family: "Funnel Display";
+}
+
+h5.quarto-listing-category-title{
+  font-family: "Funnel Display";
+}
+ div.category{
+  font-family: "Funnel Display";
+}
+
+// Descriptions
+
+div#itemDescription {
+  font-family: "Funnel Display";
+}
+
+
+// Navbar
+
+.navbar-nav {
+  font-family: "Funnel Display";
+  font-size: 1.3rem;
+  margin-right: 180px; /* Adjust the value as needed */
+  font-weight: 600; /* Bold */
+} //   text-transform: lowercase;
+
+
+.navbar-title {
+  color: #ECECF1;
+  font-family: "Funnel Display";
+  display: flex;
+  margin-left: 180px; /* Adjust the value as needed */
+  font-weight: 600; /* Bold */
+  letter-spacing: 1px; /* Slight spacing */
+  font-size: 1.4rem;
+}
+
+
+.navbar .quarto-reader-toggle .bi::before, .quarto-color-scheme-toggle .bi::before  {
+  position: relative;
+  right: 180px; /* Moves icon slightly right */
+  
+  }
+
+
+.navbar .aa-DetachedSearchButton .aa-DetachedSearchButtonIcon {
+  position: relative;
+  right: 180px; /* Moves icon slightly right */
+  }
+
+/* solving positioning problems when minimizing page uffffff */
+@media (max-width: 1050px) {
+  /* Remove the margins for navbar-title and navbar-nav on smaller screens */
+  .navbar-title,
+  .navbar-nav {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Hide the search button icon */
+  .navbar .aa-DetachedSearchButton .aa-DetachedSearchButtonIcon,
+  /* Hide the reader toggle icon */
+  .quarto-reader-toggle .bi::before,
+  /* Hide the color scheme toggle icon */
+  .quarto-color-scheme-toggle .bi::before {
+    position: relative !important;
+    right: 0;
+  }
+}
+
+
+
+.nav-footer {
+  font-size: 0.9rem;
+  font-family: "Funnel Display";
+  margin-top: 20px; 
+
+}

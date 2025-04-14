@@ -1,0 +1,12 @@
+{
+  "hash": "92f6ed12cbc5011386133765c6094a19",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Hello, Quarto\"\nimage: \"img/post_llms_chat.png\"\n---\n\n\n\n\n\n\n\n\n\n\n## Markdown\n\nMarkdown is an easy to read and write text format:\n\n- It's _plain text_ so works well with version control\n- It can be **rendered** into HTML, PDF, and more\n- Learn more at: <https://quarto.org/docs/authoring/>\n\n## Code Cell\n\nHere is a Python code cell:\n\n::: {#a729d289 .cell execution_count=1}\n``` {.python .cell-code}\n# Initialize a counter\nimport os\ncounter = 0\n\n# While loop example\nwhile counter < 5:\n    print(f\"Counter is at: {counter}\")\n    \n    # If statement inside while loop\n    if counter % 2 == 0:\n        print(\"It's an even number!\")\n\n    counter += 1  # Increment the counter\n\nprint(\"Now using a for loop:\")\n\n# For loop example\nnumbers = [1, 2, 3, 4, 5]\nfor num in numbers:\n    if num == 3:\n        print(\"Found number 3!\")\n    else:\n        print(f\"Number: {num}\")\n\nprint(\"Looping complete!\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nCounter is at: 0\nIt's an even number!\nCounter is at: 1\nCounter is at: 2\nIt's an even number!\nCounter is at: 3\nCounter is at: 4\nIt's an even number!\nNow using a for loop:\nNumber: 1\nNumber: 2\nFound number 3!\nNumber: 4\nNumber: 5\nLooping complete!\n```\n:::\n:::\n\n\n## Equation\n\nUse LaTeX to write equations:\n\n$$\n\\chi' = \\sum_{i=1}^n k_i s_i^2\n$$\n\n",
+    "supporting": [
+      "walkthrough_files/figure-html"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

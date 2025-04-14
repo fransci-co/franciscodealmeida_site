@@ -1,0 +1,12 @@
+---
+title: Virtual Machines
+search: false
+description: Notes on Virtual machines
+metadata-files: ["../_listing_metadata.yaml"]
+sidebar:
+    collapse-level: 1
+listing:
+  contents:
+   - "**index.qmd"
+   - "/*.qmd"
+---

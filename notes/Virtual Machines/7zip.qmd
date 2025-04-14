@@ -1,0 +1,18 @@
+---
+title: Extract Virtual Disks with 7zip
+categories: [Virtual Machines]
+description: Extract virtual disks without mounting a VM
+order: 1
+---
+
+
+With 7zip it's possible to extract virtual disk files without having to mount a new VM, this also includes WSL since it also uses a virtual disk.
+
+[https://www.7-zip.org/](https://www.7-zip.org/)
+
+*7-Zip 24.09 (2024-11-29)*
+
+#### Supported formats:
+Packing / unpacking: 7z, XZ, BZIP2, GZIP, TAR, ZIP and WIM
+Unpacking only: APFS, AR, ARJ, CAB, CHM, CPIO, CramFS, DMG, EXT, FAT, GPT, HFS, IHEX, ISO, LZH, LZMA, MBR, MSI, NSIS, NTFS, QCOW2, RAR, RPM, SquashFS, UDF, UEFI, **VDI, VHD, VHDX, VMDK**, XAR and Z.
+For ZIP and GZIP formats, 7-Zip provides a compression ratio that is 2-10 % better than the ratio provided by PKZip and WinZip

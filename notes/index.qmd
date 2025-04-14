@@ -1,0 +1,16 @@
+---
+title: "Notes"
+sidebar_position: 1
+search: false
+metadata-files: ["_listing_metadata.yaml"]
+listing:
+  contents: 
+   - "/*.qmd"
+   - "/*/index.qmd"
+
+  feed: true
+
+---
+
+
+

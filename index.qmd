@@ -1,0 +1,21 @@
+---
+title: "Posts"
+listing:
+  contents: blog
+  categories: true
+  date-format: "DD MMMM YYYY"
+  feed: true
+  filter-ui: false
+  image-align: "left"
+  sort: "date desc"
+  sort-ui: false
+  type: default
+  template: "/assets/custom.ejs"
+
+format: 
+  html:
+    page-layout: article
+    grid:
+        body-width: 1000px 
+---
+

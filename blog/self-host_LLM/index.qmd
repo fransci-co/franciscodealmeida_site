@@ -1,0 +1,436 @@
+---
+title: "Setting up a self-hosted LLM chatbot ft. DeepSeek"
+format:
+    html:
+        code-fold: true
+        link-external-newwindow: true
+
+jupyter: python3
+image: "img/post_llms_chat.png"
+description: "Self-host a model, serve, provide an UI, and expose it."
+date: 2025-03-06
+categories: [LLMs]
+---
+![*Canva GenAI, prompt: "Minimalistic llama riding a whale with a laptop and some reference to connection to a chatbot, deepseek logo somewhere."*](img/extended_post_llms.png)
+
+<br>
+
+Over the past few days I’ve been diving into multiple LLM frameworks, exploring the best ways to deploy a model on my own machine with the goal of setting up an AI inference chatbot for free that I can use any-time and anywhere and even make it available to others. 
+
+I am very proud of my 3-year-old laptop that ended up hosting a deepseek model on his gpu and hold up quite well!  
+
+If you search this topic, you will find many tutorials on how to run models locally, setup a LLM in known cloud services or even use API providers that hosts LLMs in their proprietary setup
+
+On this post I summarize the most common approaches I came across, the limitations I've found and different setup iterations depending on your needs. I also walk through how I self-hosted a model, served it, gave-it an UI and exposed it. Honestly, it's quite easy, there are so many great resources available. 
+
+<br>
+
+# DeepSeek 
+## Base Models
+
+<img height="64" src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/deepseek-color.svg" />
+
+
+What's the buzz surrounding DeepSeek all about? It delivers strong performance, occasionally outpacing competitors while consistently holding its own—but what truly distinguishes it from previous models?
+
+In a nutshell [Deepseek R1-Zero / R1](https://arxiv.org/abs/2501.12948) is introduced as the **first-generation reasoning models**, unlike the competitors these models articulate their reasoning behind every answer, step by step. This **Chain-of-Tought (CoT)** is great not only for the user but also for the model which is aware of the reasoning and its capable of learn and correct it if needed.  By applying **Reinforcement Learning (RL)** the model gets better over time, trough experimentation and evaluation DeepSeek models are capable of improving their reasoning and update their behaviour. As a result, the need for massive amounts of labelled data is also reduced.
+
+Here are two quotes from DeepSeek: 
+
+<blockquote>
+<p> *We directly apply reinforcement learning (RL) to the base model without relying on supervised fine-tuning (SFT) as a preliminary step. This approach allows the model to explore chain-of-thought (CoT) for solving complex problems, resulting in the development of DeepSeek-R1-Zero. DeepSeek-R1-Zero demonstrates capabilities such as self-verification, reflection, and generating long CoTs, marking a significant milestone for the research community. Notably, it is the first open research to validate that reasoning capabilities of LLMs can be incentivized purely through RL, without the need for SFT. This breakthrough paves the way for future advancements in this area.* <p> 
+
+<p>  *We introduce our pipeline to develop DeepSeek-R1. The pipeline incorporates two RL stages aimed at discovering improved reasoning patterns and aligning with human preferences, as well as two SFT stages that serve as the seed for the model's reasoning and non-reasoning capabilities. We believe the pipeline will benefit the industry by creating better models.* <p> 
+
+ <p> [*Hugging Face DeepSeek-AI*](https://huggingface.co/deepseek-ai/DeepSeek-R1) </blockquote>
+
+
+**Summarizing R1:** uses a hybrid approach, employes **Group Relative Policy Optimization (GRPO**) as the optimization policy (**RL**), utilizes cold-start data in its initial training phase (**SFT**), and undergoes additional refinement stages.
+
+
+
+Did I mention that **DeepSeek-R1** is open source? A heads-up—if you’re thinking you can run the full model on your own machine, think again. 
+  
+Like other massive AI models, **DeepSeek-R1 671B** (with 671 billion parameters) requires a lot of computing power. Even though it doesn’t activate all 671 billion parameters at once, it still demands significant resources due to its sheer scale. To improve efficiency, it uses a **Mixture-of-Experts (MoE)** architecture, activating only 37 billion parameters per request. On top of that, it incorporates large-scale reinforcement learning and other optimizations that further enhance performance and efficiency. 
+
+
+And by "a lot," I don’t mean that much if you know what you're doing:
+
+<blockquote class="twitter-tweet tw-align-center"><p lang="en" dir="ltr" >Complete hardware + software setup for running Deepseek-R1 locally. The actual model, no distillations, and Q8 quantization for full quality. Total cost, $6,000. All download and part links below:</p>&mdash; Matthew Carrigan (@carrigmat) <a href="https://twitter.com/carrigmat/status/1884244369907278106?ref_src=twsrc%5Etfw">January 28, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+
+::: {.callout-warning}
+Training it from scratch is a whole different $5.6 million story-[DeepSeek-V3 Technical Report](https://arxiv.org/html/2412.19437v1).
+:::
+
+
+## Distillation 
+
+So that's when **distillation** comes in hand. **Distillation is a machine learning technique that involves transferring knowledge from a large model to a smaller one, thus making it less demanding while trying to achieve similar performance.**
+
+These more efficient smaller models can still achieve near state-of-the-art performance for specific tasks, while solving high cost and complexity challenges of deploying Large Language Models in real-world scenarios  (@tbl-1).
+
+
+Here's another quote from DeepSeek:
+
+<blockquote>
+<p> *We demonstrate that the reasoning patterns of larger models can be distilled into smaller models, resulting in better performance compared to the reasoning patterns discovered through RL on small models. The open source DeepSeek-R1, as well as its API, will benefit the research community to distil better smaller models in the future.
+Using the reasoning data generated by DeepSeek-R1, we fine-tuned several dense models that are widely used in the research community. The evaluation results demonstrate that the distilled smaller dense models perform exceptionally well on benchmarks. We open-source distilled 1.5B, 7B, 8B, 14B, 32B, and 70B checkpoints based on Qwen2.5 and Llama3 series to the community.*  <p> 
+<p> 
+</blockquote>
+
+<br>
+
+
+:::  {#tbl-1}
+
+```{python}
+#| column: body-outset
+#| echo: false
+
+
+# Data
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+# Data
+data = [
+    ["GPT-4o-0513", 9.3, 13.4, 74.6, 49.9, 32.9, 759],
+    ["Claude-3.5-Sonnet-1022", 16.0, 26.7, 78.3, 65.0, 38.9, 717],
+    ["o1-mini", 63.6, 80.0, 90.0, 60.0, 53.8, 1820],
+    ["QwQ-32B-Preview", 44.0, 60.0, 90.6, 54.5, 41.9, 1316],
+    ["DeepSeek-R1-Distill-Qwen-1.5B", 28.9, 52.7, 83.9, 33.8, 16.9, 954],
+    ["DeepSeek-R1-Distill-Qwen-7B", 55.5, 83.3, 92.8, 49.1, 37.6, 1189],
+    ["DeepSeek-R1-Distill-Qwen-14B", 69.7, 80.0, 93.9, 59.1, 53.1, 1481],
+    ["DeepSeek-R1-Distill-Qwen-32B", 72.6, 83.3, 94.3, 62.1, 57.2, 1691],
+    ["DeepSeek-R1-Distill-Llama-8B", 50.4, 80.0, 89.1, 49.0, 39.6, 1205],
+    ["DeepSeek-R1-Distill-Llama-70B", 70.0, 86.7, 94.5, 65.2, 57.5, 1633]
+]
+
+# Column names
+columns = [
+    "Model", "AIME 2024 pass@1", "AIME 2024 cons@64", "MATH-500 pass@1", 
+    "GPQA Diamond pass@1", "LiveCodeBench pass@1", "CodeForces rating"
+]
+
+# Create DataFrame
+df = pd.DataFrame(data, columns=columns).set_index("Model")
+
+df.style.highlight_max(axis=0, props='color:white; font-weight:bold; background-color:darkblue;').format(precision=1)
+
+```
+
+ Evaluation on distilled models [*Hugging Face DeepSeek-AI*](https://huggingface.co/deepseek-ai/DeepSeek-R1) {.striped .hover}
+
+:::
+
+I tried running the DeepSeek-R1-Distill-Llama-8B but it was a bit to slow for me, so I settled for the DeepSeek-R1-Distill-Qwen-7B. For reference my machine is a Legion 5 (Lenovo) laptop with a Nvidia RTX 3060 (6GB VRAM). 
+
+
+<br>
+
+#  Serving & Hosting
+
+##  Hosting an LLM 
+
+There are three main options for hosting an LLM: 
+
+   **1.**  Set up and run it on your own machine.
+
+   **2.**  Set it up on a cloud service.
+
+   **3.**  Use an API provider with their proprietary setup.
+
+My plan was to set everything up myself and I was particularly interested in running it on my own computer. Still, I explored some cloud options—provided they were free—as a potential alternative.
+
+
+### Cloud Services
+
+The three major cloud services: Azure, AWS, and GCP offer similar free tiers, typically including around $300 in credits and a limited number of usage hours. For example, AWS EC2’s free tier provides up to 750 hours but is limited to small instances with 2 vCPUs and 1 GiB of memory, which aren't powerful enough for this project.
+
+
+Oracle Cloud’s "Always Free" tier is a much more promising option, offering ARM-based virtual machines with up to 4 cores, 24 GB of RAM, and 200 GB of storage. Even so, my priority was testing on my own machine, so I stuck with that. Regardless, it’s definitely worth keeping in mind for future projects!
+
+
+### API Providers
+
+As for API providers, **Groq** is quite appealing for personal use. It allows up to 1,000 requests per day for free on the DeepSeek-R1-Distill-LLaMA-70B a fairly big model with impressive benchmark results. It integrates easily with development frameworks like **LangChain** for building applications and provides a straightforward way to create user interfaces using **Gradio** or **Streamlit**, plus the speed is one of its key selling points.
+
+ **Hugging Face** also has *Spaces* hardware and *Inference endpoint* solutions, where the first allows for hardware rental in the form of a development space and the second for the deployment of your applications. 
+
+<br>
+
+
+## LLM Inference Serving
+
+ Serving LLM-based applications involves two key components: the **engine** and the **server**. The engine manages model execution and request batching, while the server handles routing user requests.
+
+
+![Fig. 1 - *"Architecture of servers and engines"*  Source: [RunAi](https://www.run.ai/blog/serving-large-language-models) ](img/image_run_ai.png){.lightbox}
+
+
+### Engines
+
+Engines are responsible for running the models and generating text using various optimization techniques. At their core, they are typically built with Python or C++ libraries. They process incoming user requests in batches and generate responses accordingly.
+
+
+### Server 
+
+The servers orchestrate HTTP/gRPC requests from users. In real-world applications, users interact with the chatbot at different times, the server queues these requests and sends them to the engine for response generation. Additionally, it monitors important performance metrics such as throughput and latency, essential for optimizing model serving.
+
+ 
+For more on serving here's a [RunAi article](https://www.run.ai/blog/serving-large-language-models).
+
+
+Choosing the right inference backend for serving LLMs plays a critical role in achieving fast generation speeds for a smooth user experience, while also boosting cost efficiency through high token throughput and optimized resource usage. With a wide range of inference engines and servers available from leading research and industry teams, selecting the best fit for a specific use case can be a challenging task.
+
+Popular open-source tools for inference serving:
+
+
+- **Triton Inference Server** &  **TensorRT-LLM** - NVIDIA
+
+- **vLLM** - Originally Sky Computing Lab at UC Berkeley has evolved into a community-driven project with contributions from both academia and industry.
+
+- **TGI** - Hugging Face
+
+- **Ollama** - Community driven.
+
+- **Aphrodite-Engine** -  PygmalionAI & Ruliad
+
+- **LMDeploy** - MMRazor & MMDeploy
+
+- **SGLang** - Backed by an active community with industry adoption.
+
+- **llama.cpp** - Started from ggml.ai 
+
+- **RayLLM & RayServe** - Anyscale
+ 
+
+
+### Ollama 
+<img height="64" src="https://unpkg.com/@lobehub/icons-static-svg@latest/icons/ollama.svg" />
+
+I went with Ollama for this project due to its simplicity, accessibility, and smooth integration with various frameworks—ensuring it'll be straightforward to implement future features, such as the frontend which I'll discuss in the next section. 
+
+::: {#tip1 .callout-tip}
+## Tip
+I’ve already looked into it beforehand and I know it’ll make setting up fine-tuning with RAG and Unsloth-AI in a future project much easier. 😎
+:::
+
+
+
+Ollama provides a constantly updated library of pre-trained LLM models, while ensuring effortless model management eliminating the complexities of model formats and dependencies. While it may not be the most scalable solution for large enterprises and can be slower than some alternatives, it significantly simplifies environment setup and overall workflow.
+
+It's built on top of **llama.cpp** and employs a Client-Server architecture, where the client interacts with the user via the command line, and communication between the client, server, and engine happens over HTTP. The server can be started through the command line, a desktop application or docker. Regardless of the method they all invoke the same executable file.
+
+
+
+![Fig. 2- General Overview of Ollama. [Adapted](https://medium.com/@rifewang/analysis-of-ollama-architecture-and-conversation-processing-flow-for-ai-llm-tool-ead4b9f40975) ](img/image_ollama_general.png){.lightbox}
+
+<br>
+
+## User Interface (UI)
+
+Now, we need a way to interact with our chatbot beyond the command line. The good news is that there are many open-source platforms with built-in interfaces that we can easily connect to our service. This means we don’t need to be developers to have an attractive and functional interface. In fact, the available solutions are so polished that there’s really no reason to build something from scratch that wouldn’t match the quality of these options.
+
+
+Some examples are: 
+
+- **OpenWebUI**
+
+- **HuggingChat**
+
+- **AnythingLLM**
+
+- **LibreChat**
+
+- **Jan**
+
+- **Text Generation WebUI**
+
+the list could go on and on...
+
+
+### Open WebUI
+
+I chose OpenWeb UI, and honestly, there's not much to say—it's just a fantastic tool all around. The interface is clean and intuitive, setting it up is easy, it offers extensive customization and features, it supports multiple models and backend and integrates advanced functionalities. 
+
+
+Open WebUI is a community driven self-hosted AI platform designed to operate entirely offline. It supports various LLM runners like Ollama and OpenAI-compatible APIs, with built-in inference engine for **Retrieval Augmented Generation (RAG)**, making it a powerful AI deployment solution.
+
+
+![Fig. 3- Demo [OpenWebUI](https://github.com/open-webui/open-webui).](gif/demo.gif){.lightbox} 
+
+<br>
+
+
+#  Exposing 
+## Tunneling Tools 
+
+A tunneling tool allows you to expose a local service (running on your computer or private network) to the internet. It creates a secure tunnel between your local machine and a public URL, letting others access your local service without needing to configure complex networking settings like port forwarding or firewall rules.
+
+How it works:
+
+  **1.** The tunneling tool runs on your local machine and connects to an external server.
+
+  **2.** The external server provides a public URL (often temporary).
+
+  **3.** Requests to the public URL are forwarded through the tunnel to your local service.
+
+
+### ngrok
+
+Ngrok is one of the most widely used tunneling tools, offering a quick and easy way to expose local services to the internet. With a single command like `ngrok http 3000`, it generates a public URL that forwards traffic to your local server, making it ideal for testing webhooks, remote access, and development. Paid plans offer additional features like custom domains, authentication, and enhanced security. 
+
+For more information on the topic specifically for our use case here's a nice [piece on ngrok blog](https://ngrok.com/blog-post/unlock-remote-ai-power-with-ngrok-a-game-changer-for-developers) worth checking out.
+
+
+::: {.callout-warning}
+## Warning
+In this post we are skipping security best-practices, to learn how to ensure you are using **ngrok** securely please check their [documentation](https://ngrok.com/docs/guides/other-guides/securing-your-tunnels/). You can also setup permissions and user groups on [Open WebUI](https://docs.openwebui.com/getting-started/env-configuration#chat-permissions). 
+
+:::
+
+<br>
+
+# Hands-on
+---
+
+When I first envisioned this project, I thought it would be a great way to sharpen my OOP skills in Python. Funny enough, I ended up not writing a single line of Python.
+Both Ollama and OpenWebUI provide maintained Docker images, so setting them up is as simple as running their respective containers and configuring communication between them via endpoints. Container orchestration is handled using Docker Compose.
+
+If you’re planning to run the model on a GPU, you’ll need to configure the enviroment and install the NVIDIA drivers. This process can be easily automated using `post-create command` in your `docker-compose.yaml` or `dockerfile`.
+
+>🚀 I’ll be sharing the full code soon, but first, I want to play around with fine-tuning and see if I can integrate that into the project. **Stay tuned for an update in my next post!**
+
+<br>
+
+
+
+I'm using VS Code on WSL, so I'll be referring to Linux commands.  With VS Code you can also easily set up a DevContainer for testing, experimenting with different frameworks, or simply test things out.
+
+The first step is to ensure you have Docker (or a compatible container runtime).
+
+Then, if you're running the model on your NVIDIA GPU, to set up your environment for GPU acceleration use the following commands (installing with apt): 
+
+::: {style="font-size: 75%;"}
+Source: [Ollama documentation](https://hub.docker.com/r/ollama/ollama)
+:::
+
+
+**1.** Configure the repository
+
+```{.bash}
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
+    | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
+    | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
+    | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+sudo apt-get update
+```
+
+
+**2.** Install the [NVIDIA Container Toolkit packages.](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation)
+
+```{.bash}
+sudo apt-get install -y nvidia-container-toolkit
+```
+
+
+As for docker compose all you need to do is setup both services, for example as following: 
+
+```{.yaml filename="docker-compose.yaml" eval=FALSE}
+services:
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - 7869:11434
+    volumes:
+      - .:/workspace
+      - ./ollama/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: always
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    networks:
+      - llm_inference
+    deploy:  #Only if you're running with GPU
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+  open-webui:
+    image:  ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    volumes:
+      - ./open-webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - 8080:8080
+    environment: # https://docs.openwebui.com/getting-started/env-configuration#default_models
+      - OLLAMA_BASE_URLS=http://host.docker.internal:7869 
+      - ENV=dev
+      - WEBUI_AUTH=False
+      - WEBUI_URL=http://localhost:8080
+      - WEBUI_SECRET_KEY= wg55pp #random secret key
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    networks:
+      - llm_inference
+
+networks:
+  llm_inference:
+    external: false
+
+volumes:
+  workspace:
+    driver: local
+```
+
+
+
+To download the model, you can interact directly with the container and pull the model. You can easily check all available models on [Ollama's site](https://ollama.com/search).
+
+```{.bash}
+docker exec -it ollama run deepseek-r1:7b
+```
+
+Now that everything is set up, we can simply run all the services and expose the port used by OpenWebUI through a tunneling tool, in this case ngrok. Some other options and providers are covered on [Ollama's FAQ.](https://github.com/ollama/ollama/blob/main/docs/faq.md)
+
+```{.bash}
+ngrok http 8080 --host-header="localhost:8080"
+```
+
+
+
+If we were to scale this for multiple instances/users, Kubernetes should work with a very similar setup. I came across a helpful post on Medium that explains how to do it [Host Your Own Ollama Service in a Cloud Kubernetes (K8s) Cluster](https://medium.com/@yuxiaojian/host-your-own-ollama-service-in-a-cloud-kubernetes-k8s-cluster-c818ca84a055)
+I haven’t read it thoroughly, but I think it’s worth noting.
+
+<br>
+
+
+
+### Closing Notes
+
+Since I started writing this post in late February and published it on 6th of March, three more models utilizing reinforcement learning have been released. One is [QwQ-32B](https://qwenlm.github.io/blog/qwq-32b/) (just today!), and the other is [Grok 3](https://x.ai/blog/grok-3), both setting new benchmark records. The first is open-source, and there are expectations that Grok 3 will follow, probably in the future when a new model from X replaces it. [GPT-4.5](https://openai.com/index/gpt-4-5-system-card/) is also available as a preview for paid subscribers and uses reinforcement learning as well.  
+
+DeepSeek’s work with reinforcement learning has laid the foundation for a new approach to LLMs—one that emphasizes both reinforcement learning and open-source access.  
+
+The future looks bright, and these advancements should be within reach for anyone eager to embrace this journey. It’s exciting to witness how quickly progress is being made with more and better open-source tools emerging every day. 
+
+<br>
+
+>*I hope this post provides a clear overview on inference basics*
+
+

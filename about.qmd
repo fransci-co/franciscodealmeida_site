@@ -1,0 +1,43 @@
+---
+subtitle: Francisco de Almeida
+image: /assets/img/my_image.jpg
+about:  
+    id: hero-heading
+    template: jolla
+    image-width: 20em
+    image-shape: round
+    links: 
+    - icon: linkedin
+      text: linkedin
+      href: https://www.linkedin.com/in/fransci-co/
+    - icon: github
+      text: github
+      href: https://github.com/fransci-co
+    - icon: envelope-at-fill
+      text: email
+      href: mailto:franciscoal95@hotmail.com
+    - icon: file-person-fill
+      text: resume
+      href: cv6.pdf
+
+
+---
+
+
+
+:::{#hero-heading}
+
+<br>
+
+::: {.special_font_1}
+
+Hey there, thank you for visiting my website! 👋
+
+
+I worked as a data scientist and bioinformatics researcher. Currently, I took some time from business to learn more about topics that fascinate me.  
+
+My interests span generally in the entire machine learning lifecycle with a particular focus on scalable infrastructures, deep learning, and applications in biotechnology. I am also enthusiastic about bioinformatics and data visualization.
+
+This place serves as my personal portfolio for projects and readings so feel free to comment or contact me directly via mail, every feedback is welcome!
+:::
+:::

@@ -1,0 +1,45 @@
+project:
+  type: website
+
+website:
+  title: "Francisco de Almeida"
+  page-footer: 
+    left: Built with [Quarto {{< iconify simple-icons:quarto title="Quarto Logo" label="Quarto Logo" >}}](https://quarto.org/). Copyright © Francisco de Almeida 2025. 
+    right: License [{{< iconify bi:cc-circle >}} BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.en).
+
+  navbar:
+    background: "#111112"
+    foreground: "#f1f6fc"  
+    right:
+      - text: "blog"
+        file: index.qmd
+      - text: "til"
+        file: til.qmd
+      - text: notes
+        file: notes/index.qmd
+      - href: about.qmd
+        text: "about"
+  sidebar:
+    - title: notes
+      pinned: false
+      collapse-level: 1
+      style: docked
+      contents: notes/
+
+  search:
+    type: overlay
+
+format:
+  html:
+    theme:
+      light: [flatly, styles.scss,theme-light.scss]  
+      dark: [darkly, styles.scss, theme-dark.scss]      
+#    highlight-style: arrow
+    css: styles.css
+execute:
+  freeze: auto
+
+
+
+
+

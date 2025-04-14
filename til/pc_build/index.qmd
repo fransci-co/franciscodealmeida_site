@@ -1,0 +1,68 @@
+---
+title: "My First PC Build"
+lightbox: true
+format:
+    html:
+        link-external-newwindow: true
+        code-fold: true
+image: "img/coverb.jpg"
+description: "My 3rd laptop in 10 years died, I went and build a small desktop (μATX)."
+date: 2025-04-06
+---
+::: {layout-ncol=3}
+![Case closed](img/galer/closed.jpg){.lightbox group="firstpcbuild"}
+
+![Left open](img/galer/left-open.jpg){.lightbox group="firstpcbuild"}
+
+![Backside](img/galer/backside.jpg){.lightbox group="firstpcbuild"}
+:::
+
+**Specs:** [PcPartPicker](https://pcpartpicker.com/list/djHHb2)
+
+Looks damn good and it was damn hard, I really tried my best to double-check every decision on placement, installation and cable management, ended up having to rebuild a couple of times mainly because of the liquid cooler placement.
+
+Overall I am really proud of what I achieved with 1568€, highlights on: 
+- Liquid cooler AIO 360 pure loop2 fx reconditioned for half price only had very small bent fins, that's why I insisted so much in keeping it altought it made my life miserable (fan hub + pump on top). 
+- Rtx 3090 2nd hand for 650€ (24gb VRAM great for training and fine tunning models). 
+- Ryzen 7700 tray version for 200 €. 
+
+I also think the build is quite upgradable in the future.
+
+
+::: {.callout-note appearance="minimal" collapse="true"}
+### Highlights
+::: {layout ="[[1,1],[80,20]]"}
+![Radiator Back](img/bend1.jpeg){width=4in height=4in}
+
+![Radiator Front](img/bend2.jpeg){width=4in height=4in}
+
+![RTX 3090 Gigabyte OC ](img/rtx.png){width=6in height=4in}
+
+![Ryzen 7700 Tray version](img/tray.png){width=2in height=2in}
+
+:::
+
+:::
+
+
+
+
+Here's a timelapse
+
+
+::: {.center}
+<div style="position: relative; width: 480px; height: 853px;">
+  <iframe 
+    src="https://www.youtube.com/embed/Zoq1n6eILcU" 
+    title="YouTube Shorts"
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+    frameborder="0" 
+    allow="accelerometer;clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+    allowfullscreen>
+  </iframe>
+</div>
+:::
+
+
+
+

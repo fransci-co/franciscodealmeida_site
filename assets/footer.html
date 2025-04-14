@@ -1,0 +1,29 @@
+<head>
+    <!-- ... -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@waline/client@v3/dist/waline.css"
+    />
+  </head>
+  <body>
+    <!-- ... -->
+    <div id="waline"></div>
+    <script type="module">
+      import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+  
+      init({
+        el: '#waline',
+        serverURL: 'https://sitecomments-virid.vercel.app',
+        lang: 'en',
+        pageview: true, // pageview statistics
+        reaction: [
+    'https://unpkg.com/@waline/emojis@1.3.0/tw/1f44d.png',
+    'https://unpkg.com/@waline/emojis@1.3.0/tw/1f44f.png',
+    'https://unpkg.com/@waline/emojis@1.3.0/tw/2753.png',
+  ],
+
+      });
+    </script>
+  </body>
+  
+  

@@ -1,0 +1,18 @@
+---
+title: GPU Partitioning 
+description: Divide GPU power between VMs.
+categories: [Virtual Machines]
+format:
+    html:
+        link-external-newwindow: true
+order: 2
+---
+
+
+GPU Partitioning on Windows laptop/desktop for VMs w/ Windows Hyper-V
+A compilation of information on how to do GPU Paravirtualization on windows laptop using Windows Hyper-V.
+
+Check this guide: [https://github.com/fransci-co/LaptopGPU_PV](https://github.com/fransci-co/LaptopGPU_PV)
+
+
+
