@@ -1,0 +1,32 @@
+{
+  "index.qmd": {
+    "index.html": "e93ac90b"
+  },
+  "notes/index.qmd": {
+    "index.html": "aeae6ffe"
+  },
+  "notes/Virtual Machines/index.qmd": {
+    "index.html": "44fff525"
+  },
+  "about.qmd": {
+    "about.html": "0318faa4"
+  },
+  "til.qmd": {
+    "til.html": "51c9dc16"
+  },
+  "publications.qmd": {
+    "publications.html": "3b5f2b3b"
+  },
+  "til/pc_build/index.qmd": {
+    "index.html": "da14c8eb"
+  },
+  "blog/self-host_LLM/index.qmd": {
+    "index.html": "b2d8c454"
+  },
+  "notes/Virtual Machines/GPUpartioning.qmd": {
+    "GPUpartioning.html": "85aca8cf"
+  },
+  "notes/Virtual Machines/7zip.qmd": {
+    "7zip.html": "b42aabcc"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "listingMap": {
+    "til.qmd": [
+      "til"
+    ],
+    "index.qmd": [
+      "blog"
+    ],
+    "notes/index.qmd": [
+      "/*.qmd",
+      "/*/index.qmd"
+    ],
+    "notes/Virtual Machines/index.qmd": [
+      "**index.qmd",
+      "/*.qmd"
+    ]
+  }
+}

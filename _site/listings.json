@@ -1,0 +1,27 @@
+[
+  {
+    "listing": "/til.html",
+    "items": [
+      "/til/pc_build/index.html"
+    ]
+  },
+  {
+    "listing": "/index.html",
+    "items": [
+      "/blog/self-host_LLM/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/index.html",
+    "items": [
+      "/notes/Virtual Machines/index.html"
+    ]
+  },
+  {
+    "listing": "/notes/Virtual Machines/index.html",
+    "items": [
+      "/notes/Virtual Machines/7zip.html",
+      "/notes/Virtual Machines/GPUpartioning.html"
+    ]
+  }
+]
