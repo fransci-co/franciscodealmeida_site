@@ -17,5 +17,6 @@ format:
     page-layout: article
     grid:
         body-width: 1000px 
+ 
 ---
 

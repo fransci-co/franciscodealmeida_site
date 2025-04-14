@@ -1,7 +1,7 @@
 project:
   type: website
 
-website:
+website: 
   title: "Francisco de Almeida"
   site-url: "https://www.franciscodealmeida.com"
 

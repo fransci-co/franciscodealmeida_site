@@ -18,7 +18,7 @@ about:
       href: mailto:franciscoal95@hotmail.com
     - icon: file-person-fill
       text: resume
-      href: cv6.pdf
+      href: "/assets/pdf/cv6.pdf"
 
 
 ---
