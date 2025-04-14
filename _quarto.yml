@@ -1,5 +1,7 @@
 project:
   type: website
+  resources: 
+    - /assets/pdf/cv6.pdf
 
 website: 
   title: "Francisco de Almeida"

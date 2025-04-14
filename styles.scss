@@ -105,6 +105,9 @@ div#itemDescription {
   right: 180px; /* Moves icon slightly right */
   }
 
+
+
+  
 /* solving positioning problems when minimizing page uffffff */
 @media (max-width: 1050px) {
   /* Remove the margins for navbar-title and navbar-nav on smaller screens */
@@ -135,4 +138,9 @@ div#itemDescription {
 }
 
  
-@media only screen and (max-width: 768px) { #container {flex-direction: column; }}
+
+
+@media only screen and (max-width: 768px) { 
+  #container {flex-direction:column;}
+  .navbar-title {    white-space: pre-wrap; line-height: 1;}
+}
