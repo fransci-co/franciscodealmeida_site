@@ -6,7 +6,7 @@ project:
 website: 
   title: "Francisco de Almeida"
   site-url: "https://www.franciscodealmeida.com"
-
+  favicon: /assets/img/favicon-32x32.png
   page-footer: 
     left: Built with [Quarto {{< iconify simple-icons:quarto title="Quarto Logo" label="Quarto Logo" >}}](https://quarto.org/). Copyright © Francisco de Almeida 2025. 
     right: License [{{< iconify bi:cc-circle >}} BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.en).
