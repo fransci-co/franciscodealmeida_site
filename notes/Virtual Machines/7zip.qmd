@@ -1,7 +1,7 @@
 ---
 title: Extract Virtual Disks with 7zip
 categories: [Virtual Machines]
-description: Extract virtual disks without mounting a VM
+description: Extract virtual disks without mounting a VM.
 order: 1
 ---
 
